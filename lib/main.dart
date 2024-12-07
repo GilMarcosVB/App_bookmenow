@@ -1,13 +1,16 @@
+import 'package:bookmenow/detalhes_servicos_page.dart';
 import 'package:bookmenow/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    title: 'Bookmenow',
-    theme: ThemeData(
-      primaryColor: Colors.white,
+  runApp(
+    MaterialApp(
+      title: "BookMeNow",
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.white,
+      ),
+      home: const HomePage(),
     ),
-    home: const HomePage(),
-  ));
+  );
 }
-

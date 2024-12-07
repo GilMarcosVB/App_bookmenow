@@ -1,5 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+import 'package:bookmenow/detalhes_servicos_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> listaServicos() async {
     try {
       final response =
-          await http.get(Uri.parse('http://10.56.45.23/public/api/servicos'));
+          await http.get(Uri.parse('http://10.56.45.36/public/api/servicos'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -39,6 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   void mostrarError(String mensagem) {
     setState(() {
+      isLoading = false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(mensagem),
@@ -51,27 +51,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("BookMeNow"),
+        title: const Text("BookMeNow"),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 14, 167, 255),
+        backgroundColor: Colors.blue,
       ),
       backgroundColor: Colors.white,
       drawer: Drawer(
         child: ListView(
-          children: [
+          children: const [
             SizedBox(
               height: 100,
               child: DrawerHeader(
-                decoration: BoxDecoration(color: Colors.orange),
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 28, horizontal: 16),
                 child: Text(
-                  "Olá, Gilzão",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  "Olá, Gilzao",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
             ListTile(
               leading: Icon(Icons.login),
+              // trailing: Icon(Icons.login),
               title: Text("Login"),
             ),
             ListTile(
@@ -86,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(Icons.info),
               title: Text("Sobre o BookMeNow"),
-            )
+            ),
           ],
         ),
       ),
@@ -96,52 +102,57 @@ class _HomePageState extends State<HomePage> {
               itemCount: servicos.length,
               itemBuilder: (context, index) {
                 final servico = servicos[index];
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetalhesServicosPage(servico: servico),
+                        ));
+                  },
+                  child: Card(
+                    elevation: 0.5,
+                    margin: const EdgeInsets.all(8.0),
+                    color: const Color(0xFFfcfcfc),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Imagem do serviço
                         Image.network(
                           servico['fotos'][0]['imagem'],
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
                         ),
-                        SizedBox(width: 10),
-                        // Informações do serviço
                         Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                servico['fotos'][0]['imagem'],
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  servico['titulo'],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                servico['descricao'],
-                                maxLines: 2,
-                                overflow: TextOverflow.clip,
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                'R\$ ${double.parse(servico['valor']).toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
+                                Text(
+                                  servico['descricao'],
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'R\$ ${double.parse(servico['valor']).toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
